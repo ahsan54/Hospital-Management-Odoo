@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="seq_hospital" model="ir.sequence">
+        <field name="name">Patient Sequence</field>
+        <field name="code">hospital.patient</field>
+        <field name="prefix">PN</field>
+        <field name="padding">5</field>
+    </record>
+
+    <record id="view_patient_form" model="ir.ui.view">
+        <field name="name">Patient Form</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_available" type="object" string="Available" class="oe_highlight"/>
+                    <button name="action_lost" type="object" string="Lost" class="oe_highlight"/>
+                    <button name="action_draft" type="object" string="Reset To Draft" class="oe_link"/>
+                    <button name="action_done" type="object" string="Done"/>
+                    <button name="action_cancel" type="object" string="Cancelled" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,available,lost,cancel,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="reference_no"/>
+                            <field name="name"/>
+                            <field name="patient_age"/>
+                            <field name="gender"/>
+                            <field name="dob"/>
+                            <field name="patient_address"/>
+                            <field name="date_of_last_visit"/>
+                        </group>
+                        <group>
+                            <field name="patient_disease"/>
+                            <field name="medicine"/>
+                            <field name="description"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" options="{'open_attachments': True}"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_patient_tree" model="ir.ui.view">
+        <field name="name">Patient Tree</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="reference_no"/>
+                <field name="name"/>
+                <field name="patient_age"/>
+                <field name="gender"/>
+                <field name="dob"/>
+                <field name="patient_address"/>
+                <field name="date_of_last_visit"/>
+                <field name="patient_disease"/>
+                <field name="medicine"/>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="search_id" model="ir.ui.view">
+        <field name="name">Patient Search</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference_no"/>
+                <field name="patient_disease"/>
+                <filter string="No Date of Birth" name="no_dob" domain="[('dob','=',False)]"/>
+                <filter string="Male" name="by_gender" domain="[('gender','=','male')]"/>
+                <filter string="Female" name="by_gender" domain="[('gender','=','female')]"/>
+                <filter string="Age Greater Than 60" name="by_age" domain="[('patient_age', '&gt;' ,60)]"/>
+                <filter string="Age Between 35 and 50" name="bys_age"
+                        domain="[('patient_age','&gt;=',35),('patient_age','&lt;',50)]"/>
+
+                <group expand="1" string="Group By">
+                    <filter string="Group By Name" name="name" context="{'group_by':'name'}"/>
+                    <filter string="Group By Age" name="patient_age" context="{'group_by':'patient_age'}"/>
+                    <filter string="Group By Disease" name="patient_disease" context="{'group_by':'patient_disease'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="patient_action_id" model="ir.actions.act_window">
+        <field name="name">Patient</field>
+        <field name="res_model">hospital.patient</field>
+        <field name="view_mode">tree,kanban,form</field>
+    </record>
+
+    <menuitem id="menu_hospital_root" name="Hospital" sequence="101"/>
+    <menuitem id="menu_patient_root" name="Patient" sequence="1" parent="menu_hospital_root"
+              action="patient_action_id"/>
+</odoo>
